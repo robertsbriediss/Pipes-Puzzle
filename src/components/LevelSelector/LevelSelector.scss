@@ -1,0 +1,51 @@
+.LevelSelector {
+    max-width: 350px;
+
+    .SingleLevel {
+        border-radius: 10px;
+        border: solid 2px var(--level-selector-single-level-border-color);
+        font-weight: bold;
+        padding: 20px;
+        text-align: center;
+        width: 100%;
+        background-color: var(--level-selector-single-level-bg);
+        position: relative;
+      
+        &:not(.isPlayable) {
+            cursor: default;
+        }
+      
+        &:not(:last-child) {
+            margin-bottom: 15px;
+        }
+      
+        &.isPlayable {
+            border-color: var(--success-color);
+            background-color: var(--level-selector-single-level-bg-complete);
+        }
+
+        .CompletedIcon {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            height: 20px;
+            width: 20px;
+            padding: 5px;
+            background-color: var(--level-selector-single-level-bg-complete);
+            border-radius: 50%;
+            box-shadow: rgb(0 0 0 / 24%) 0px 0px 10px;
+            border: solid 1px var(--success-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &:after {
+                content: '';
+                background-image: url('../../../public/check-mark.svg');
+                height: 80%;
+                width: 80%;
+                display: block;
+            }
+        }
+    }
+}

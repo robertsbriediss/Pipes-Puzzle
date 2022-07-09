@@ -1,0 +1,32 @@
+{
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "env": {
+        "browser": true
+    },
+    "plugins": [
+        "react",
+        "@typescript-eslint"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "airbnb-base"
+    ],
+    "globals": {
+        "window": true,
+        "navigator": true
+    },
+    "rules": {
+        "indent": ["error",4],
+        "max-len": ["error", { "code": 120 }],
+        "no-shadow": "off",
+        "consistent-return": "off",
+        "import/prefer-default-export": "off",
+        "import/no-unresolved": "off",
+        "comma-dangle": "off",
+        "no-param-reassign": "off",
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": ["error"]
+    }
+}

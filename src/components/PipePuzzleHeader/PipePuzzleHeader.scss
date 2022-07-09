@@ -1,0 +1,48 @@
+.PipePuzzleHeader {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    align-items: center;
+    margin-bottom: 20px;
+
+    div {
+        align-items: center;
+        background-color: #d2d2d2;
+        border-radius: 50%;
+        border: solid 2px #d2d2d2;
+        display: flex;
+        height: 40px;
+        justify-content: center;
+        width: 40px;
+
+        &.isActive {
+            background-color: white;
+            border-color: #d2d2d2;
+            color: black;
+        }
+
+        &.isCompleted {
+            background-color: var(--bg);
+            border-color: var(--bg);
+            color: white;
+        }
+
+        &:not(:last-of-type) {
+            margin-right: 10px;
+        }
+    }
+
+    .LevelTitle {
+        background-color: var(--accent);
+        border-radius: 10px;
+        color: white;
+        font-weight: bold;
+        padding: 10px 20px;
+        box-shadow: rgb(0 0 0 / 24%) 0px 0px 10px;
+    }
+    
+    .BackButton {
+        left: 0;
+        position: absolute;
+    }
+}

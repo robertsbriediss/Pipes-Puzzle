@@ -1,0 +1,42 @@
+.PipePuzzleFooter {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+  
+    button {
+        &:not(:last-of-type) {
+            margin-right: 15px;
+        }
+    }
+
+    .Actions {
+        &.isCompleted {
+            flex-direction: column;
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    .CompletedLevelTitle {
+        font-weight: bold;
+        color: var(--success-color);
+        margin: 0 0 20px 0;
+    }
+
+    .ColorMeaning {
+        display: flex;
+        margin-bottom: 30px;
+        align-items: center;
+
+        .ColorBlock {
+            width: 25px;
+            height: 25px;
+            background-color: var(--pipe-grid-cell-solved-bg);
+            border-radius: 5px;
+            display: block;
+            margin-right: 15px;
+        }
+    }
+}

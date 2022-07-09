@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { LevelSelector } from 'components/LevelSelector/LevelSelector';
+import { PipePuzzle } from 'components/PipePuzzle/PipePuzzle';
+import { Footer } from 'components/Footer/Footer';
+import { Header } from 'components/Header/Header';
+import { Notification } from 'components/Notification/Notification';
+import { Helmet } from 'components/Helmet/Helmet';
+
+import { createSocketConnection } from 'api/socket';
+
+import { useAppDispatch, useAppSelector } from 'store';
+
+import './App.scss';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const dispatch = useAppDispatch();
+    createSocketConnection(dispatch);
+
+    const selectedLevel = useAppSelector((state) => state.puzzle.selectedLevel);
+
+    // const isDarkTheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDarkTheme = false;
+
+    return (
+        <div className="App" data-theme={ isDarkTheme ? 'theme-dark' : 'theme-light' }>
+            <Helmet />
+            <Notification />
+            <Header />
+            <div className="Body">
+                <div className="BodyContent">
+                    { selectedLevel
+                        ? <PipePuzzle />
+                        : <LevelSelector />
+                    }
+                </div>
+            </div>
+            <Footer />
+        </div>
+    );
 }
 
 export default App;

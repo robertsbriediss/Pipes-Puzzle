@@ -1,0 +1,78 @@
+:root {
+    // Default Theme
+    --success-color: #39b139;
+    --text-color: #000000;
+    --bg: #8fbc8f;
+    --body-bg: #ffffff;
+    --accent: #ffa500;
+
+    --button-bg: #EFEFEF;
+    --button-hover-bg: #E3E2DD;
+    --button-primary-bg: #8fbc8f;
+    --button-primary-hover-bg: #87ae87;
+    --button-primary-color: #ffffff;
+
+    --level-selector-single-level-border-color: #d3d3d3;
+    --level-selector-single-level-bg: #EFEFEF;
+    --level-selector-single-level-bg-complete: #e8ffe8;
+
+    --pipe-grid-cell-color: #000000;
+    --pipe-grid-cell-solved-bg: lightskyblue;
+
+    --notification-bg: #f45252;
+    --notification-message-color: #ffffff;
+
+    --header-color: #ffffff;
+
+    --footer-color: #ffffff;
+}
+
+[data-theme="theme-dark"] {
+    --success-color: #00ff00;
+    --text-color: #ffffff;
+    --bg: #0f2c56;
+    --body-bg: #184481;
+    --accent: #2b9fb5;
+
+    --button-bg: #0f2c56;
+    --button-hover-bg: #0f2c56;
+    --button-primary-bg: #2a75e1;
+    --button-primary-hover-bg: #2a75e1;
+    --button-primary-color: white;
+
+    --level-selector-single-level-border-color: #d3d3d3;
+    --level-selector-single-level-bg: #0f2c56;
+    --level-selector-single-level-bg-complete: #0f2c56;
+
+    --pipe-grid-cell-color: #ffffff;
+    --pipe-grid-cell-solved-bg: #0f2c56;
+
+    --notification-bg: #f45252;
+    --notification-message-color: #ffffff;
+
+    --header-color: #ffffff;
+
+    --footer-color: #ffffff;
+}
+
+.App {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg);
+
+    .Body {
+        margin: 0 auto;
+        flex: 1 1;
+    }
+    
+    .BodyContent {
+        margin: 0 20px;
+        padding: 30px;
+        box-shadow: rgb(0 0 0 / 24%) 0px 0px 10px;
+        background-color: var(--body-bg);
+        border-radius: 15px;
+    }
+}
+
