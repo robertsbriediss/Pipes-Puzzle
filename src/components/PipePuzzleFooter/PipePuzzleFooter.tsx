@@ -2,7 +2,6 @@ import { changeLevelState, selectLevel, solveMap } from 'store/puzzle';
 import { useAppDispatch, useAppSelector } from 'store';
 
 import './PipePuzzleFooter.scss';
-import { useState } from 'react';
 
 function ResetButton() {
     const level = useAppSelector((state) => state.puzzle.selectedLevel);
@@ -56,7 +55,7 @@ function VerifyButton() {
     );
 }
 
-function Actions({ changeIsSolved }: { changeIsSolved: (state: boolean) => void }) {
+function Actions() {
     const dispatch = useAppDispatch();
     const state = useAppSelector((state) => state.puzzle.state);
 
@@ -80,7 +79,6 @@ function Actions({ changeIsSolved }: { changeIsSolved: (state: boolean) => void 
             <button
                 onClick={ () => {
                     dispatch(solveMap());
-                    changeIsSolved(true);
                 } }
             >
                 { isSolvingState ? 'Solving...' : 'Solve' }
@@ -90,17 +88,17 @@ function Actions({ changeIsSolved }: { changeIsSolved: (state: boolean) => void 
 }
 
 export function PipePuzzleFooter() {
-    const [isSolved, changeIsSolved] = useState(false);
+    const isSolvedState = useAppSelector((state) => state.puzzle.isSolvedState);
 
     return (
         <div className="PipePuzzleFooter">
-            { isSolved && (
+            { isSolvedState && (
                 <div className="ColorMeaning">
                     <span className="ColorBlock"/>
                     <span>Represents solved cell</span>
                 </div>
             ) }
-            <Actions changeIsSolved={ changeIsSolved }/>
+            <Actions />
         </div>
     );
 }

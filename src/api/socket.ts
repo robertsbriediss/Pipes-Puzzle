@@ -18,11 +18,15 @@ export const createSocketConnection = (reduxDispatch: AppDispatch) => {
     };
 
     socket.onmessage = (event) => {
-        if (event.data.startsWith('map:')) {
+        const responseType = event.data.split(':')[0];
+
+        if (responseType === 'map') {
             reduxDispatch(setMap(event.data));
+
+            return;
         }
 
-        if (event.data.startsWith('verify:')) {
+        if (responseType === 'verify') {
             const isCompleted = !!event.data.split('Password:')[1];
 
             // Added timeout to not have flick effect, because response might come too fast

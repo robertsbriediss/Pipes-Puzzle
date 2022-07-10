@@ -16,6 +16,7 @@ type InitialState = {
     solvedMap: PuzzleMap,
     selectedLevel: number,
     state: LevelState | null,
+    isSolvedState: boolean,
     game: {
         [level: string]: {
             isCompleted: boolean
@@ -27,6 +28,7 @@ const initialState: InitialState = {
     map: null,
     solvedMap: [[]],
     state: null,
+    isSolvedState: false,
     selectedLevel: 0,
     game: getGameLocalStorage()
 };
@@ -58,15 +60,16 @@ const puzzleSlice = createSlice({
                 socket.send('verify');
             }
 
-            state.state = action.payload;
+            state.state = newStateOfLevel;
         },
 
         selectLevel: (state: InitialState, action: PayloadAction<number>) => {
             const nextLevel = action.payload;
 
             state.state = 'initializing';
-            state.solvedMap = initialState.solvedMap;
             state.selectedLevel = nextLevel;
+            state.solvedMap = initialState.solvedMap;
+            state.isSolvedState = initialState.isSolvedState;
 
             // Added timeout to see loading state
             setTimeout(() => {
@@ -80,6 +83,7 @@ const puzzleSlice = createSlice({
             state.selectedLevel = initialState.selectedLevel;
             state.state = initialState.state;
             state.solvedMap = initialState.solvedMap;
+            state.isSolvedState = initialState.isSolvedState;
         },
 
         solveMap: (state: InitialState) => {
@@ -90,6 +94,7 @@ const puzzleSlice = createSlice({
             }
 
             solvePuzzle(map, state);
+            state.isSolvedState = true;
         }
     }
 });

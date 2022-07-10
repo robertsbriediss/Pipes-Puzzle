@@ -6,13 +6,14 @@ import './LevelSelector.scss';
 export function LevelSelector() {
     const dispatch = useAppDispatch();
     const game = useAppSelector((state) => state.puzzle.game);
+    const levelCount = 6;
 
     return (
         <div className="LevelSelector">
-            { new Array(6).fill(true).map(((_, levelIndex) => {
+            { new Array(levelCount).fill(1).map(((_, levelIndex) => {
                 const level = levelIndex + 1;
                 const isCompleted = game[level]?.isCompleted;
-                const isUnlocked = level === 0
+                const isUnlocked = levelIndex === 0
                     ? true
                     : game[levelIndex]?.isCompleted;
 
@@ -23,9 +24,9 @@ export function LevelSelector() {
                         key={ level }
                         className={ `SingleLevel ${isPlayable ? 'isPlayable' : ''}` }
                         onClick={ () => {
-                            if (isPlayable) {
-                                dispatch(selectLevel(level));
-                            }
+                            // if (isPlayable) {
+                            dispatch(selectLevel(level));
+                            // }
                         } }
                     >
                         <span>Level { level }</span>

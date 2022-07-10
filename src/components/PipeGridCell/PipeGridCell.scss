@@ -1,0 +1,22 @@
+.PipeGridCell {
+  align-items: center;
+  background-color: transparent;
+  border: none;
+  display: inline-flex;
+  font-size: 28px;
+  height: 32px;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  width: 32px;
+  color: var(--pipe-grid-cell-color);
+
+  &:hover {
+    box-shadow: #c5c5c5 0px 0px 0px 1px;
+    border-radius: 0;
+  }
+
+  &.isSolved {
+    background-color: var(--pipe-grid-cell-solved-bg)
+  }
+}

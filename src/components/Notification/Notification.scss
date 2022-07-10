@@ -7,6 +7,10 @@
     right: 20px;
     top: 20px;
 
+    @media only screen and (max-width: 480px) {
+        left: 20px;
+    }
+
     .NotificationMessage {
         color: var(--notification-message-color);
         font-weight: bold;

@@ -16,14 +16,11 @@ function App() {
     createSocketConnection(dispatch);
 
     const selectedLevel = useAppSelector((state) => state.puzzle.selectedLevel);
-
-    // const isDarkTheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const isDarkTheme = false;
 
     return (
         <div className="App" data-theme={ isDarkTheme ? 'theme-dark' : 'theme-light' }>
             <Helmet />
-            <Notification />
             <Header />
             <div className="Body">
                 <div className="BodyContent">
@@ -33,6 +30,7 @@ function App() {
                     }
                 </div>
             </div>
+            <Notification />
             <Footer />
         </div>
     );

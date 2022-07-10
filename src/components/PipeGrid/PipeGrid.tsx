@@ -1,36 +1,13 @@
 import './PipeGrid.scss';
 
-import socket from 'api/socket';
 import { useAppSelector } from 'store';
-
-function PipeGridCell({ value, rowIndex, columnIndex }: { value: string, rowIndex: number, columnIndex: number }) {
-    const state = useAppSelector((state) => state.puzzle.state);
-    const solvedMap = useAppSelector((state) => state.puzzle.solvedMap);
-    const isSolved = !!solvedMap[rowIndex]?.[columnIndex];
-
-    return (
-        <button
-            className={ `PipeGridCell ${isSolved ? 'isSolved' : ''}` }
-            data-pipe-type={ value }
-            onClick={ () => {
-                if (state === 'verifying') {
-                    return null;
-                }
-
-                socket.send(`rotate ${columnIndex} ${rowIndex}`);
-                socket.send('map');
-            } }
-        >
-            { value }
-        </button>
-    );
-}
+import { PipeGridCell } from 'components/PipeGridCell/PipeGridCell';
 
 export function PipeGrid() {
     const map = useAppSelector((state) => state.puzzle.map);
     const state = useAppSelector((state) => state.puzzle.state);
 
-    const renderGrid = (row: string[], rowIndex: number) => (
+    const renderGridRow = (row: string[], rowIndex: number) => (
         <div
             key={ rowIndex }
             className="PipeGridRow"
@@ -48,7 +25,7 @@ export function PipeGrid() {
         <div className="PipeGrid">
             <div className="PipeGridContent">
                 { state !== 'initializing' && map
-                    ? map.map(((row, rowIndex) => renderGrid(row, rowIndex)))
+                    ? map.map(((row, rowIndex) => renderGridRow(row, rowIndex)))
                     : <span className="LoadingTitle">Loading...</span>
                 }
             </div>
