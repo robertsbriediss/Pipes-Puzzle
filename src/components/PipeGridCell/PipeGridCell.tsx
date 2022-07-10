@@ -16,11 +16,13 @@ export function PipeGridCell({
 }: PipeGridCellInterface) {
     const state = useAppSelector((state) => state.puzzle.state);
     const solvedMap = useAppSelector((state) => state.puzzle.solvedMap);
-    const isSolved = !!solvedMap[rowIndex]?.[columnIndex];
+
+    const isSolved = solvedMap[rowIndex]?.[columnIndex] ? 'isSolved' : '';
+    const isVerifyingIncorrectState = state === 'verifyingIncorrect' ? 'isVerifyingIncorrectState' : '';
 
     return (
         <button
-            className={ `PipeGridCell ${isSolved ? 'isSolved' : ''}` }
+            className={ `PipeGridCell ${isSolved} ${isVerifyingIncorrectState}`}
             data-pipe-type={ value }
             onClick={ () => {
                 if (state === 'verifying') {

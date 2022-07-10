@@ -7,7 +7,7 @@
     flex-direction: column;
     align-items: center;
     max-height: 65vh;
-    max-width: 70vw;
+    max-width: min(75vh, 70vw);
     min-height: 150px;
     min-width: min(240px, 50vw);
     position: relative;

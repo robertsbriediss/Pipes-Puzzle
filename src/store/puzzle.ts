@@ -7,7 +7,13 @@ const convertMap = (map: string) => map.split('\n')
     .slice(1, -1)
     .map((row) => row.split(''));
 
-type LevelState = 'initializing' | 'inProgress' | 'verifying' | 'solving' | 'completed'
+type LevelState =
+    'initializing'
+    | 'inProgress'
+    | 'verifying'
+    | 'verifyingIncorrect'
+    | 'solving'
+    | 'completed';
 
 export type PuzzleMap<T = string> = T[][];
 

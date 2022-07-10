@@ -1,7 +1,7 @@
 import { PuzzleMap } from 'store/puzzle';
 
 /**
- * Solve 100% sure straight away cells, like some border cells, '╋' and those cell neighbors
+ * Solve 100% straight away known cells, like some grid border cells, '╋' and those cell neighbors
  */
 export const stageOne = (
     map: PuzzleMap,

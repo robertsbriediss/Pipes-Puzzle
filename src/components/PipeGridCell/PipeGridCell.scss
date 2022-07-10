@@ -10,13 +10,20 @@
   position: relative;
   width: 32px;
   color: var(--pipe-grid-cell-color);
+  transition: color 500ms;
 
   &:hover {
     box-shadow: #c5c5c5 0px 0px 0px 1px;
     border-radius: 0;
+    background-color: transparent;
   }
 
   &.isSolved {
-    background-color: var(--pipe-grid-cell-solved-bg)
+    background-color: var(--pipe-grid-cell-solved-bg);
+  }
+
+  &.isVerifyingIncorrectState {
+    color: var(--pipe-grid-cell-verifying-incorrect-color);
+    transition: color 100ms;
   }
 }

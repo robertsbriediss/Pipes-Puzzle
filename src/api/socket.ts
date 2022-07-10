@@ -1,3 +1,4 @@
+import { getEnv } from 'helpers/env';
 import { AppDispatch } from 'store';
 import { changeLevelState, setMap } from 'store/puzzle';
 
@@ -10,7 +11,7 @@ import { changeLevelState, setMap } from 'store/puzzle';
 // rotate X1 Y1\nX2 Y2\nX3 Y3 - rotates multiple cells with one command, max 1MB per command
 // verify     - verifies the current solution
 
-const socket = new WebSocket('wss://hometask.eg1236.com/game-pipes/');
+const socket = new WebSocket(getEnv('REACT_APP_WEBSOCKET_ENDPOINT'));
 
 export const createSocketConnection = (reduxDispatch: AppDispatch) => {
     socket.onerror = () => {
@@ -31,7 +32,18 @@ export const createSocketConnection = (reduxDispatch: AppDispatch) => {
 
             // Added timeout to not have flick effect, because response might come too fast
             setTimeout(() => {
-                reduxDispatch(changeLevelState(isCompleted ? 'completed' : 'inProgress'));
+                if (isCompleted) {
+                    reduxDispatch(changeLevelState('completed'));
+
+                    return;
+                }
+
+                reduxDispatch(changeLevelState('verifyingIncorrect'));
+
+                // Remove verifying incorrect state after 700ms
+                setTimeout(() => {
+                    reduxDispatch(changeLevelState('inProgress'));
+                }, 700);
             }, 500);
         }
     };

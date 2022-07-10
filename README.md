@@ -21,10 +21,11 @@ Game can be seen and played on
 ## Known limitations
 
 1. Pipe grid map is requested in one call, so the higher level size is quite huge, its affecting smooth render.
-    1.1. Possible solution is to split grid in chunks or create pagination loading
+    1. Possible solution is to split grid in chunks or create pagination loading
 2. When single pipe rotations happens, map request is made and map grid data is fetched (same issue as 1.)
-    3.1. Possible solution is to store rotation count locally and before verify action, rotate all required pipes, but then BE and FE wouldn't be in sync.
+    1. Possible solution is to store rotation count locally and before verify action, rotate all required pipes, but then BE and FE wouldn't be in sync.
 3. Websocket on error doesn't start automatically by itself, need to refresh the page
+4. Auto-solver solves only 70-100%, to make it 100%, need to add 3rd stage which will go through all unsolved pipes and loop through all possible cases
 
 ---
 
@@ -34,6 +35,9 @@ Game can be seen and played on
 2. Data is requested through websocket, connected to wss://hometask.eg1236.com/game-pipes/
 3. Data is saved on global store with redux, to have ability to get data from one place
 4. On level completion level id is saved to local storage, to have ability to refresh page without losing completed levels
+5. Auto-solver splitter in stages
+   1. Solve 100% straight away known cells, like some grid border cells, '╋' and those cell neighbors
+   2. Solve cells by checking neighbor cells
 
 ---
 
@@ -51,13 +55,19 @@ Game can be seen and played on
     git checkout develop
     ```
 
-3. Install dependencies
+3. Create .env file
+
+   ```bash
+   cp .env.example .env
+   ```
+
+4. Install dependencies
 
     ```bash
     yarn
     ```
 
-4. Run the app in the development mode
+5. Run the app in the development mode
 
     ```bash
     yarn start
