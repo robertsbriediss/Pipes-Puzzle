@@ -36,6 +36,7 @@ Game can be seen and played on
 5. Auto-solver splitter in stages
    1. Solve 100% straight away known cells, like some grid border cells, '╋' and those cell neighbors
    2. Solve cells by checking neighbor cells
+6. Pipe grid is using react-virtualized package for smooth rendering
 
 ---
 
