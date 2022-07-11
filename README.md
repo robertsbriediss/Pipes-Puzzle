@@ -20,12 +20,10 @@ Game can be seen and played on
 
 ## Known limitations
 
-1. Pipe grid map is requested in one call, so the higher level size is quite huge, its affecting smooth render.
-    1. Possible solution is to split grid in chunks or create pagination loading
-2. When single pipe rotations happens, map request is made and map grid data is fetched (same issue as 1.)
+1. When single pipe rotation happens, map request is made, so on higher level request is getting slower
     1. Possible solution is to store rotation count locally and before verify action, rotate all required pipes, but then BE and FE wouldn't be in sync.
-3. Websocket on error doesn't start automatically by itself, need to refresh the page
-4. Auto-solver solves only 70-100%, to make it 100%, need to add 3rd stage which will go through all unsolved pipes and loop through all possible cases
+2. Websocket on error doesn't start automatically by itself, need to refresh the page
+3. Auto-solver solves only 70-100%, to make it 100%, need to add 3rd stage which will go through all unsolved pipes and loop through all possible cases
 
 ---
 
