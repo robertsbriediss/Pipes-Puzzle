@@ -24,9 +24,9 @@ export function LevelSelector() {
                         key={ level }
                         className={ `SingleLevel ${isPlayable ? 'isPlayable' : ''}` }
                         onClick={ () => {
-                            // if (isPlayable) {
-                            dispatch(selectLevel(level));
-                            // }
+                            if (isPlayable) {
+                                dispatch(selectLevel(level));
+                            }
                         } }
                     >
                         <span>Level { level }</span>
