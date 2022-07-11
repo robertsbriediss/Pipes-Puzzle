@@ -1,20 +1,21 @@
 .PipeGrid {
-  flex: 1 1;
-  overflow: scroll;
+  overflow: hidden;
 
   .PipeGridContent {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-height: 65vh;
-    max-width: min(75vh, 70vw);
-    min-height: 150px;
-    min-width: min(240px, 50vw);
     position: relative;
-    white-space: nowrap;
-    padding: 1px;
-    justify-content: flex-start;
-    align-items: flex-start;
+    width: min(650px, 70vw);
+    max-width: min(75vh, 70vw);
+    height: min(550px, 80vw);
+    max-height: 65vh;
+
+    &.isFirstLevel {
+      // cell height 32px * 8 rows
+      height: 256px;
+      max-height: 70vh;
+      // cell width 32px * 8 columns
+      width: 256px;
+      max-width: 70vw;
+    }
 
     @media only screen and (max-width: 480px) {
       max-height: 40vh;
