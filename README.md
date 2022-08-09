@@ -23,7 +23,11 @@ Game can be seen and played on
 1. When single pipe rotation happens, map request is made, so on higher level request is getting slower
     1. Possible solution is to store rotation count locally and before verify action, rotate all required pipes, but then BE and FE wouldn't be in sync.
 2. Websocket on error doesn't start automatically by itself, need to refresh the page
-3. Auto-solver solves only 70-100%, to make it 100%, need to add 3rd stage which will go through all unsolved pipes and loop through all possible cases
+3. Solver takes too much time to solve big puzzles
+   1. Solution could be
+      1. Checking next cell closest to top-left corner
+      2. Checking neighbor cases when theres one possibility
+      3. Checking neighbors if theres no unsolved and impossible "islands"
 
 ---
 
@@ -33,9 +37,8 @@ Game can be seen and played on
 2. Data is requested through websocket, connected to wss://hometask.eg1236.com/game-pipes/
 3. Data is saved on global store with redux, to have ability to get data from one place
 4. On level completion level id is saved to local storage, to have ability to refresh page without losing completed levels
-5. Auto-solver splitter in stages
-   1. Solve 100% straight away known cells, like some grid border cells, '╋' and those cell neighbors
-   2. Solve cells by checking neighbor cells
+5. Auto-solver have visualization to see how solving logic works
+   1. Solving logic is created in a way that it grows from starting point
 6. Pipe grid is using react-virtualized package for smooth rendering
 
 ---
