@@ -20,15 +20,19 @@ export function PipeGridCell({
     const rowIndexState = useAppSelector((state) => state.puzzle.rowIndex);
     const columnIndexState = useAppSelector((state) => state.puzzle.columnIndex);
     const isSolving = useAppSelector((state) => state.puzzle.isSolving);
+    const possibilityMap = useAppSelector((state) => state.puzzle.possibilityMap);
 
     const isSolved = solvedMap[rowIndex]?.[columnIndex] ? 'isSolved' : '';
     const isVerifyingIncorrectState = state === 'verifyingIncorrect' ? 'isVerifyingIncorrectState' : '';
     const isCurrent = rowIndexState === rowIndex && columnIndex === columnIndexState && isSolving;
     const isFlop = !!flowMap.find((flow) => flow === `${rowIndex},${columnIndex}`) || isCurrent;
+    const isPossibility = possibilityMap.find(({ shape }) => shape.startsWith(`${rowIndex},${columnIndex}`))
+        ? 'isPossibility'
+        : '';
 
     return (
         <button
-            className={ `PipeGridCell ${isSolved} ${isVerifyingIncorrectState}`}
+            className={ `PipeGridCell ${isSolved} ${isVerifyingIncorrectState} ${isPossibility}`}
             data-pipe-type={ value }
             style={ { ...isFlop && { border: 'solid 2px orange' }, ...isCurrent && { backgroundColor: '#ffcc8d' } } }
             onClick={ () => {

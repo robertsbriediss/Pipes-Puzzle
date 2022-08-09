@@ -26,4 +26,17 @@
     color: var(--pipe-grid-cell-verifying-incorrect-color);
     transition: color 100ms;
   }
+
+  &.isPossibility {
+    &:after {
+      content: '';
+      height: 10px;
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      width: 10px;
+      background-color: red;
+      border-radius: 50%;
+    }
+  }
 }
