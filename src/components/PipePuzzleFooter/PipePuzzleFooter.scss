@@ -40,3 +40,22 @@
         }
     }
 }
+
+.SolverConfig {
+    margin-top: 15px;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+
+    .Count {
+        margin-top: 5px;
+    }
+
+    .Actions {
+        margin-top: 10px;
+    }
+
+    .SpeedInput {
+        margin-top: 10px;
+    }
+}

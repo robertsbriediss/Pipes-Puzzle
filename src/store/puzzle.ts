@@ -1,7 +1,12 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+/* eslint-disable max-len */
+import {
+    createSlice,
+    PayloadAction
+} from '@reduxjs/toolkit';
 import socket from 'api/socket';
 import { getGameLocalStorage, setGameLocalStorage } from 'helpers/localStorage';
-import { solvePuzzle } from 'helpers/puzzleSolver';
+import { solvePuzzlesOneStep } from 'helpers/puzzleSolver';
+import { Possibility } from 'helpers/puzzleSolver/stageThree';
 
 const convertMap = (map: string) => map.split('\n')
     .slice(1, -1)
@@ -17,7 +22,7 @@ type LevelState =
 
 export type PuzzleMap<T = string> = T[][];
 
-type InitialState = {
+export type InitialState = {
     map: PuzzleMap | null,
     solvedMap: PuzzleMap,
     selectedLevel: number,
@@ -27,8 +32,31 @@ type InitialState = {
         [level: string]: {
             isCompleted: boolean
         }
-    }
+    },
+
+    // Solving
+    isSolving: boolean,
+    shape: string,
+    rowIndex: number,
+    columnIndex: number,
+    possibilityMap: Possibility[],
+    flowMap: string[],
+    isLoop: boolean,
+    solvingCount: number,
+    solvingSpeed: number
 }
+
+const initialSolvingState = {
+    isSolving: false,
+    shape: '',
+    rowIndex: 1,
+    columnIndex: 0,
+    possibilityMap: [],
+    flowMap: [],
+    isLoop: false,
+    solvingCount: 0,
+    solvingSpeed: 200
+};
 
 const initialState: InitialState = {
     map: null,
@@ -36,7 +64,9 @@ const initialState: InitialState = {
     state: null,
     isSolvedState: false,
     selectedLevel: 0,
-    game: getGameLocalStorage()
+    game: getGameLocalStorage(),
+
+    ...initialSolvingState
 };
 
 const puzzleSlice = createSlice({
@@ -48,6 +78,11 @@ const puzzleSlice = createSlice({
 
             state.map = convertedMap;
             state.state = 'inProgress';
+
+            // Solver
+            const rowCount = convertedMap.length;
+            const columnCount = convertedMap[0].length;
+            state.solvedMap = Array.from(Array(rowCount), () => Array.from(Array(columnCount)));
         },
 
         changeLevelState: (state: InitialState, action: PayloadAction<LevelState>) => {
@@ -77,6 +112,17 @@ const puzzleSlice = createSlice({
             state.solvedMap = initialState.solvedMap;
             state.isSolvedState = initialState.isSolvedState;
 
+            // Solving initial state
+            state.isSolving = initialSolvingState.isSolving;
+            state.shape = initialSolvingState.shape;
+            state.rowIndex = initialSolvingState.rowIndex;
+            state.columnIndex = initialSolvingState.columnIndex;
+            state.possibilityMap = initialSolvingState.possibilityMap;
+            state.flowMap = initialSolvingState.flowMap;
+            state.isLoop = initialSolvingState.isLoop;
+            state.solvingCount = initialSolvingState.solvingCount;
+            state.solvingSpeed = initialSolvingState.solvingSpeed;
+
             // Added timeout to see loading state
             setTimeout(() => {
                 socket.send(`new ${nextLevel}`);
@@ -90,17 +136,67 @@ const puzzleSlice = createSlice({
             state.state = initialState.state;
             state.solvedMap = initialState.solvedMap;
             state.isSolvedState = initialState.isSolvedState;
+
+            // Solving initial state
+            state.isSolving = initialSolvingState.isSolving;
+            state.shape = initialSolvingState.shape;
+            state.rowIndex = initialSolvingState.rowIndex;
+            state.columnIndex = initialSolvingState.columnIndex;
+            state.possibilityMap = initialSolvingState.possibilityMap;
+            state.flowMap = initialSolvingState.flowMap;
+            state.isLoop = initialSolvingState.isLoop;
+            state.solvingCount = initialSolvingState.solvingCount;
+            state.solvingSpeed = initialSolvingState.solvingSpeed;
         },
 
-        solveMap: (state: InitialState) => {
-            const { map } = state;
+        startSolving: (state: InitialState) => {
+            state.isSolving = true;
+            console.time('Solving');
+        },
+
+        stopSolving: (state: InitialState) => {
+            state.isSolving = false;
+        },
+
+        changeSolvingSpeed: (state: InitialState, action: PayloadAction<number>) => {
+            const newSolvingSpeed = action.payload;
+
+            state.solvingSpeed = newSolvingSpeed;
+        },
+
+        pushSolvedMap: (state: InitialState) => {
+            const {
+                rowIndex,
+                columnIndex,
+                flowMap,
+                possibilityMap,
+                solvedMap,
+                map,
+                isLoop,
+                shape,
+            } = state;
 
             if (!map) {
                 return;
             }
 
-            solvePuzzle(map, state);
-            state.isSolvedState = true;
+            const rowCount = map.length;
+            const columnCount = map[0].length;
+            const cell = shape || map[rowIndex][columnIndex];
+
+            solvePuzzlesOneStep(
+                state,
+                map,
+                solvedMap,
+                possibilityMap,
+                flowMap,
+                cell,
+                rowIndex,
+                columnIndex,
+                rowCount,
+                columnCount,
+                isLoop
+            );
         }
     }
 });
@@ -110,7 +206,10 @@ export const {
     changeLevelState,
     selectLevel,
     resetLevel,
-    solveMap
+    pushSolvedMap,
+    startSolving,
+    stopSolving,
+    changeSolvingSpeed
 } = puzzleSlice.actions;
 
 export default puzzleSlice;

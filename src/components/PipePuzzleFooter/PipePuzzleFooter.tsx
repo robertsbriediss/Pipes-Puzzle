@@ -1,4 +1,10 @@
-import { changeLevelState, selectLevel, solveMap } from 'store/puzzle';
+import {
+    changeLevelState,
+    changeSolvingSpeed,
+    selectLevel,
+    startSolving,
+    stopSolving
+} from 'store/puzzle';
 import { useAppDispatch, useAppSelector } from 'store';
 
 import './PipePuzzleFooter.scss';
@@ -58,6 +64,7 @@ function VerifyButton() {
 function Actions() {
     const dispatch = useAppDispatch();
     const state = useAppSelector((state) => state.puzzle.state);
+    const isSolving = useAppSelector((state) => state.puzzle.isSolving);
 
     if (state === 'completed') {
         return (
@@ -70,19 +77,51 @@ function Actions() {
         );
     }
 
-    const isSolvingState = state === 'solving';
-
     return (
         <div>
             <VerifyButton />
             <ResetButton />
             <button
                 onClick={ () => {
-                    dispatch(solveMap());
+                    if (!isSolving) {
+                        dispatch(startSolving());
+                    }
                 } }
             >
-                { isSolvingState ? 'Solving...' : 'Solve' }
+                { isSolving ? 'Solving...' : 'Solve' }
             </button>
+        </div>
+    );
+}
+
+function SolverConfigs() {
+    const dispatch = useAppDispatch();
+    const solvingCount = useAppSelector((state) => state.puzzle.solvingCount);
+    const solvingSpeed = useAppSelector((state) => state.puzzle.solvingSpeed);
+
+    return (
+        <div className="SolverConfig">
+            <b>Solver Config</b>
+            <div className="Count">Count: {solvingCount}</div>
+            <div>
+                <span>Speed </span>
+                <input
+                    className="SpeedInput"
+                    type="number"
+                    value={solvingSpeed}
+                    onChange={(solvingSpeed) => dispatch(
+                        changeSolvingSpeed(solvingSpeed.target.value as unknown as number)
+                    )}
+                />
+            </div>
+            <div className="Actions">
+                <button onClick={ () => dispatch(startSolving()) }>
+                    Start
+                </button>
+                <button onClick={ () => dispatch(stopSolving()) }>
+                    Stop
+                </button>
+            </div>
         </div>
     );
 }
@@ -99,6 +138,7 @@ export function PipePuzzleFooter() {
                 </div>
             ) }
             <Actions />
+            <SolverConfigs />
         </div>
     );
 }

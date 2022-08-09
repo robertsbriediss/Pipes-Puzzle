@@ -6,8 +6,9 @@ import {
 } from 'react-virtualized';
 import { PipeGridCell } from 'components/PipeGridCell/PipeGridCell';
 
-import { useAppSelector } from 'store';
-import { PuzzleMap } from 'store/puzzle';
+import { useAppDispatch, useAppSelector } from 'store';
+import { pushSolvedMap, PuzzleMap } from 'store/puzzle';
+import { useEffect } from 'react';
 
 const renderCell = (
     map: PuzzleMap,
@@ -29,6 +30,32 @@ const renderCell = (
 );
 
 export function PipeGrid() {
+    const isSolving = useAppSelector((state) => state.puzzle.isSolving);
+    const solvingSpeed = useAppSelector((state) => state.puzzle.solvingSpeed);
+
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (isSolving) {
+                // console.log('interval');
+                dispatch(pushSolvedMap());
+            }
+        }, solvingSpeed);
+
+        if (!isSolving) {
+            clearTimeout(interval);
+        }
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, [isSolving, solvingSpeed]);
+
+    // ------------
+    // ------------
+    // ------------
+
     const map = useAppSelector((state) => state.puzzle.map);
     const state = useAppSelector((state) => state.puzzle.state);
     const selectedLevel = useAppSelector((state) => state.puzzle.selectedLevel);

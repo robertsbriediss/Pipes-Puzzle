@@ -2,7 +2,7 @@ import { PuzzleMap } from 'store/puzzle';
 
 const endShape = ['╹', '╺', '╻', '╸'];
 
-type IsBorder = { rowIndex: number, cellIndex: number, columnCount: number, rowCount: number }
+type IsBorder = { rowIndex: number, columnIndex: number, columnCount: number, rowCount: number }
 
 const searchPattern = {
     top: {
@@ -12,7 +12,7 @@ const searchPattern = {
         connectionShapes: ['╻', '┏', '┓', '┃', '┳', '┣', '┫', '╋']
     },
     right: {
-        isBorder: ({ cellIndex, columnCount }: IsBorder) => cellIndex + 1 === columnCount,
+        isBorder: ({ columnIndex, columnCount }: IsBorder) => columnIndex + 1 === columnCount,
         getRowIndex: (rowIndex: number) => rowIndex,
         getColumnIndex: (column: number) => column + 1,
         connectionShapes: ['╸', '┛', '┓', '━', '┳', '┫', '┻', '╋']
@@ -24,7 +24,7 @@ const searchPattern = {
         connectionShapes: ['╹', '┛', '┗', '┃', '┻', '┣', '┫', '╋']
     },
     left: {
-        isBorder: ({ cellIndex }: IsBorder) => cellIndex === 0,
+        isBorder: ({ columnIndex }: IsBorder) => columnIndex === 0,
         getRowIndex: (rowIndex: number) => rowIndex,
         getColumnIndex: (column: number) => column - 1,
         connectionShapes: ['╺', '┗', '┏', '━', '┻', '┳', '┣', '╋']
@@ -36,7 +36,7 @@ interface GetCellValueInterface {
     map: PuzzleMap,
     solvedMap: PuzzleMap,
     cellRowIndex: number,
-    cellCellIndex: number,
+    cellColumnIndex: number,
     rowCount: number,
     columnCount: number
 }
@@ -52,7 +52,7 @@ const getBorderValue = ({
     map,
     solvedMap,
     cellRowIndex,
-    cellCellIndex,
+    cellColumnIndex,
     rowCount,
     columnCount
 }: GetCellValueInterface) => {
@@ -61,7 +61,7 @@ const getBorderValue = ({
     // Validate if cell is grid border, then connection not possible
     if (cellSearchPattern.isBorder({
         rowIndex: cellRowIndex,
-        cellIndex: cellCellIndex,
+        columnIndex: cellColumnIndex,
         rowCount,
         columnCount
     })) {
@@ -69,14 +69,14 @@ const getBorderValue = ({
     }
 
     const rowIndex = cellSearchPattern.getRowIndex(cellRowIndex);
-    const cellIndex = cellSearchPattern.getColumnIndex(cellCellIndex);
-    const cell = solvedMap[rowIndex]?.[cellIndex];
+    const columnIndex = cellSearchPattern.getColumnIndex(cellColumnIndex);
+    const cell = solvedMap[rowIndex]?.[columnIndex];
 
     // Validate if cell is already solved
     if (cell === undefined || cell === '' || cell === null) {
         // Validate if cell and top cell are both end shape, then connection not possible
-        if (endShape.includes(map[rowIndex]?.[cellIndex])
-            && endShape.includes(map[cellRowIndex]?.[cellCellIndex])
+        if (endShape.includes(map[rowIndex]?.[columnIndex])
+            && endShape.includes(map[cellRowIndex]?.[cellColumnIndex])
         ) {
             return 0;
         }
@@ -103,7 +103,7 @@ export const getBorderMap = (
     map: PuzzleMap,
     solvedMap: PuzzleMap,
     rowIndex: number,
-    cellIndex: number,
+    columnIndex: number,
     rowCount: number,
     columnCount: number
 ) => {
@@ -111,7 +111,7 @@ export const getBorderMap = (
         map,
         solvedMap,
         cellRowIndex: rowIndex,
-        cellCellIndex: cellIndex,
+        cellColumnIndex: columnIndex,
         rowCount,
         columnCount
     };

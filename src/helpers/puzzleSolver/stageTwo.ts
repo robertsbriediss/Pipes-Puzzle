@@ -7,7 +7,7 @@ import { PuzzleMap } from 'store/puzzle';
  *
  * '╹'  |  '╸'  |  ['╹', '╺', '╻', '╸'] => 3 rotations is needed
  */
-const getRotationCount = (cellShape: string, searchedShape: string, shapeMap: string[]) => {
+export const getRotationCount = (cellShape: string, searchedShape: string, shapeMap: string[]) => {
     let rotationCount = 0;
     let cellIndex = -1;
     let searchIndex = -1;

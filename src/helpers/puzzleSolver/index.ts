@@ -1,33 +1,140 @@
+import { InitialState as PuzzleStoreState, PuzzleMap } from 'store/puzzle';
+import { getNextCell, getPossibility, Possibility } from 'helpers/puzzleSolver/stageThree';
 import socket from 'api/socket';
-import { PuzzleMap } from 'store/puzzle';
-import { stageTwo } from 'helpers/puzzleSolver/stageTwo';
-import { stageOne } from 'helpers/puzzleSolver/stageOne';
 
-const getSocketRotate = (solvedRotation: PuzzleMap<number>): string => (
-    solvedRotation.reduce((acc, row, rowIndex) => {
-        row.forEach((rotationCount, cellIndex) => {
-            if (rotationCount) {
-                acc += Array.from(Array(rotationCount)).map(() => `${cellIndex} ${rowIndex}\n`).join('');
+/**
+ * Goes through solvedMap and creates a multiple rotation string and sends to socket
+ */
+const rotateSocketMap = (map: PuzzleMap, solvedMap: PuzzleMap,) => {
+    const rotationMap: Record<string, string> = {
+        '╹': '╺',
+        '╺': '╻',
+        '╻': '╸',
+        '╸': '╹',
+
+        '━': '┃',
+        '┃': '━',
+
+        '┣': '┳',
+        '┳': '┫',
+        '┫': '┻',
+        '┻': '┣',
+
+        '┛': '┗',
+        '┗': '┏',
+        '┏': '┓',
+        '┓': '┛'
+    };
+    const rotations: string[] = [];
+
+    solvedMap.forEach((row, rowIndex) => row.forEach((shape, columnIndex) => {
+        const previousShape = map[rowIndex][columnIndex];
+
+        const findShape = (previousShape: string) => {
+            if (previousShape === shape) {
+                return;
             }
-        });
 
-        return acc;
-    }, 'rotate ')
-);
+            rotations.push(`${columnIndex} ${rowIndex}\n`);
 
-export const solvePuzzle = (map: PuzzleMap, state: { solvedMap: PuzzleMap }) => {
-    const rowCount = map.length;
-    const columnCount = map[0].length;
-    const solvedMap: PuzzleMap = Array.from((Array(rowCount)), () => Array.from(Array(columnCount)));
-    const solvedRotation: PuzzleMap<number> = Array.from((Array(rowCount)), () => (
-        Array.from(Array(columnCount).fill(0))
-    ));
+            findShape(rotationMap[previousShape]);
+        };
 
-    stageOne(map, solvedMap, solvedRotation);
-    stageTwo(map, solvedMap, solvedRotation, rowCount, columnCount);
+        findShape(previousShape);
+    }));
 
+    if (rotations.length) {
+        socket.send(`rotate ${rotations.join('')}`);
+    }
+};
+
+/**
+ * Solves puzzles one step by getting cell possible rotation and searching for next cell
+ */
+export const solvePuzzlesOneStep = (
+    state: PuzzleStoreState,
+    map: PuzzleMap,
+    solvedMap: PuzzleMap,
+    possibilityMap: Possibility[],
+    flowMap: string[],
+    cell: string,
+    rowIndex: number,
+    columnIndex: number,
+    rowCount: number,
+    columnCount: number,
+    isLoop?: boolean,
+) => {
+    const possibility = getPossibility(
+        map,
+        solvedMap,
+        possibilityMap,
+        flowMap,
+        cell,
+        rowIndex,
+        columnIndex,
+        rowCount,
+        columnCount,
+        isLoop
+    );
+
+    const nextCell = getNextCell(
+        solvedMap,
+        flowMap,
+        possibility,
+        columnCount,
+        rowCount
+    );
+
+    if (!nextCell) {
+        // Check is puzzle solved
+        const isPuzzleSolved = !!solvedMap.find(((y) => y.findIndex((x) => !x) !== -1));
+
+        if (isPuzzleSolved) {
+            const {
+                shape: nextCell,
+                solvedMap: previousSolvedMap,
+                flowMap: previousFlowMap
+            } = possibilityMap.pop() as Possibility;
+            const [nextRowIndex, nextColumnIndex, nextShape] = nextCell.split(',');
+
+            flowMap.splice(0, flowMap.length);
+            previousFlowMap.forEach((flow) => {
+                flowMap.push(flow);
+            });
+
+            solvedMap.splice(0, solvedMap.length);
+            previousSolvedMap.forEach((solved) => {
+                solvedMap.push(solved);
+            });
+
+            state.shape = nextShape;
+            state.solvedMap = solvedMap;
+            state.rowIndex = Number(nextRowIndex);
+            state.columnIndex = Number(nextColumnIndex);
+            state.flowMap = flowMap;
+            state.possibilityMap = possibilityMap;
+            state.isLoop = true;
+            state.solvingCount += 1;
+
+            return;
+        }
+
+        state.isSolving = false;
+        console.timeEnd('Solving');
+
+        rotateSocketMap(map, solvedMap);
+
+        return;
+    }
+
+    const [nextRowIndex, nextColumnIndex, nextShape] = nextCell.split(',');
+
+    state.shape = nextShape;
     state.solvedMap = solvedMap;
-
-    socket.send(getSocketRotate(solvedRotation));
-    socket.send('map');
+    state.rowIndex = Number(nextRowIndex);
+    state.columnIndex = Number(nextColumnIndex);
+    state.flowMap = flowMap;
+    state.possibilityMap = possibilityMap;
+    state.isLoop = false;
+    state.solvingCount += 1;
 };
